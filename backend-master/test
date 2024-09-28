@@ -1,0 +1,62 @@
+import mongoose from 'mongoose';
+import BookingModel from './models/BookingModel.js'; // Remplacez par le chemin réel vers votre fichier de modèle BookingModel
+
+// Remplacez ces valeurs par les valeurs réelles que vous souhaitez utiliser
+const bookingsData = [
+  {
+    client: '66b4daa83f6cee6dd481966f', // Remplacez par l'ObjectId du client pour la première réservation
+    service: '66b92f1d04fed8356793c39a', // Remplacez par l'ObjectId du service pour la première réservation
+    provider: '66b8cd01e85ddfb05191a51b', // Remplacez par l'ObjectId du fournisseur pour la première réservation
+    date: new Date('2024-08-11'), // Remplacez par la date souhaitée pour la première réservation
+    timeSlot: '10:00 AM - 11:00 AM', // Remplacez par le créneau horaire souhaité pour la première réservation
+    comments: 'First booking comments', // Remplacez par les commentaires souhaités pour la première réservation
+  },
+  {
+    client: '66b4daa83f6cee6dd481966f', // Remplacez par l'ObjectId du client pour la deuxième réservation
+    service: '66b92f1d04fed8356793c39a', // Remplacez par l'ObjectId du service pour la deuxième réservation
+    provider: '66b8cd01e85ddfb05191a51b', // Remplacez par l'ObjectId du fournisseur pour la deuxième réservation
+    date: new Date('2024-08-12'), // Remplacez par la date souhaitée pour la deuxième réservation
+    timeSlot: '11:00 AM - 12:00 PM', // Remplacez par le créneau horaire souhaité pour la deuxième réservation
+    comments: 'Second booking comments', // Remplacez par les commentaires souhaités pour la deuxième réservation
+  },
+  {
+    client: '66b4daa83f6cee6dd481966f', // Remplacez par l'ObjectId du client pour la troisième réservation
+    service: '66b92f1d04fed8356793c39a', // Remplacez par l'ObjectId du service pour la troisième réservation
+    provider: '66b8cd01e85ddfb05191a51b', // Remplacez par l'ObjectId du fournisseur pour la troisième réservation
+    date: new Date('2024-08-13'), // Remplacez par la date souhaitée pour la troisième réservation
+    timeSlot: '01:00 PM - 02:00 PM', // Remplacez par le créneau horaire souhaité pour la troisième réservation
+    comments: 'Third booking comments', // Remplacez par les commentaires souhaités pour la troisième réservation
+  },
+];
+
+// Connectez-vous à MongoDB
+mongoose.connect('mongodb://localhost:27017/ServiceDarna', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+
+// Créez les réservations
+const createBookings = async () => {
+  try {
+    const bookingPromises = bookingsData.map(async (bookingData) => {
+      const newBooking = new BookingModel(bookingData);
+      await newBooking.save();
+      console.log('Booking successfully created:', newBooking);
+    });
+
+    await Promise.all(bookingPromises);
+    console.log('All bookings successfully created');
+  } catch (error) {
+    console.error('Failed to create bookings:', error.message);
+  } finally {
+    mongoose.connection.close(); // Fermez la connexion après l'opération
+  }
+};
+
+createBookings();
